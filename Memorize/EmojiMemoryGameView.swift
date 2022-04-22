@@ -127,7 +127,19 @@ struct CardView: View {
     var body: some View {
         GeometryReader { geometry in
             ZStack {
-                Pie(startAngle: Angle(degrees: 0-90), endAngle: Angle(degrees: (1-animateBonusRemaining)*360-90))
+                Group{
+                    if card.isConsumingBonusTime {
+                        Pie(startAngle: Angle(degrees: 0-90), endAngle: Angle(degrees: (1-animateBonusRemaining)*360-90))
+                            .onAppear{
+                                animateBonusRemaining = card.bonusRemaining
+                                withAnimation(.linear(duration: card.bonusTimeRemaining)) {
+                                    animateBonusRemaining = 0
+                                }
+                            }
+                    } else {
+                        Pie(startAngle: Angle(degrees: 0-90), endAngle: Angle(degrees: (1-card.bonusRemaining)*360-90))
+                    }
+                }
                     .padding(5)
                     .opacity(0.5)
                 Text(card.content)
